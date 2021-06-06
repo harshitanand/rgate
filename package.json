@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "local:install": "npm uninstall -g rgate && npm install -g .",
+    "start:dev": "./run.sh",
+    "docker:start": "pm2 delete all && docker-compose up --build -d",
+    "docker:stop": "docker-compose stop",
+    "docker:kill": "docker-compose stop && docker-compose rm -f",
     "lint": "npm run lint:server",
     "prettier": "prettier --single-quote --trailing-comma es5 --print-width 120 --write .",
     "precommit": "lint-staged"

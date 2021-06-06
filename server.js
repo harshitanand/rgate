@@ -25,7 +25,7 @@ const responseMiddleware = (req, res, next) => {
   return next();
 };
 
-const init = (port = 8080, proxies = []) => {
+const init = (port = 8080, proxies = [], defaultRes) => {
   const app = express();
 
   app.use(requestMiddleware);
@@ -41,8 +41,6 @@ const init = (port = 8080, proxies = []) => {
             [`^${proxy.route}`]: '',
           },
           changeOrigin: true,
-          // onProxyReq: (err, req, res, next) => requestMiddleware(req, res, next),
-          // onProxyRes: (err, req, res, next) => responseMiddleware(req, res, next),
         })
       );
       return proxy;
@@ -59,6 +57,9 @@ const init = (port = 8080, proxies = []) => {
   });
 
   app.get('/api', (req, res) => res.status(200).json({ messages: 'done' }));
+  app.use((req, res) => {
+    return res.status(defaultRes.status).json({ message: `${defaultRes.message}🥵` });
+  });
 
   process.on('SIGTERM', () => {
     app.close(() => {

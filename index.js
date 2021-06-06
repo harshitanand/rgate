@@ -50,7 +50,14 @@ const configParser = async (path) => {
     return route;
   });
 
-  return proxies;
+  const defaultRes = {};
+  doc.default_response.map((item) => {
+    if (item.body) defaultRes.message = item.body || 'Not Found';
+    else if (item.status_code) defaultRes.status = item.status_code || '403';
+    return item;
+  });
+
+  return { proxies, defaultRes };
 };
 
 const main = async () => {
@@ -65,12 +72,12 @@ const main = async () => {
   const options = program.opts();
   if (options.port.trim() && fs.existsSync(options.config.trim())) {
     console.log('API Gateway starting at port ', options.port);
-    const proxies = await configParser(options.config.trim()).catch((err) => {
+    const { proxies, defaultRes } = await configParser(options.config.trim()).catch((err) => {
       console.error(err.message);
       process.exit(1);
     });
     console.log(proxies);
-    server.init(options.port.trim(), proxies);
+    server.init(options.port.trim(), proxies, defaultRes);
   } else console.log('Config file does not exists!! ', options);
 };
 
