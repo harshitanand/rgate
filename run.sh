@@ -1,5 +1,6 @@
 # npm install -g pm2
 
+yarn docker:kill
 pm2 delete all
 # Run Orders Microservice
 cd orders && yarn && pm2 --name Orders start server.js -f
