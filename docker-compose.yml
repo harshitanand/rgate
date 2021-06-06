@@ -1,0 +1,26 @@
+version: '3.3'
+services:
+  payment:
+    container_name: payment
+    build: ./payment
+    volumes:
+      - ./payment:/app
+    ports:
+      - '3000:3000'
+  orders:
+    container_name: orders
+    build: ./orders
+    volumes:
+      - ./orders:/app
+    ports:
+      - '3001:3001'
+  rgate:
+    container_name: rgate
+    build: .
+    links:
+      - payment
+      - orders
+    volumes:
+      - .:/app
+    ports:
+      - '8080:8080'
